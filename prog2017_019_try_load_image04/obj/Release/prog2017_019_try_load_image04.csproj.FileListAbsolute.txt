@@ -1,0 +1,9 @@
+E:\001_teaching\240-441-multicore\ppt-2565\prog2017_Assignment_image_processing\prog2017_019_try_load_image04\bin\Release\prog2017_019_try_load_image04.exe.config
+E:\001_teaching\240-441-multicore\ppt-2565\prog2017_Assignment_image_processing\prog2017_019_try_load_image04\bin\Release\prog2017_019_try_load_image04.exe
+E:\001_teaching\240-441-multicore\ppt-2565\prog2017_Assignment_image_processing\prog2017_019_try_load_image04\bin\Release\prog2017_019_try_load_image04.pdb
+E:\001_teaching\240-441-multicore\ppt-2565\prog2017_Assignment_image_processing\prog2017_019_try_load_image04\obj\Release\prog2017_019_try_load_image04.Form1.resources
+E:\001_teaching\240-441-multicore\ppt-2565\prog2017_Assignment_image_processing\prog2017_019_try_load_image04\obj\Release\prog2017_019_try_load_image04.Properties.Resources.resources
+E:\001_teaching\240-441-multicore\ppt-2565\prog2017_Assignment_image_processing\prog2017_019_try_load_image04\obj\Release\prog2017_019_try_load_image04.csproj.GenerateResource.cache
+E:\001_teaching\240-441-multicore\ppt-2565\prog2017_Assignment_image_processing\prog2017_019_try_load_image04\obj\Release\prog2017_019_try_load_image04.csproj.CoreCompileInputs.cache
+E:\001_teaching\240-441-multicore\ppt-2565\prog2017_Assignment_image_processing\prog2017_019_try_load_image04\obj\Release\prog2017_019_try_load_image04.exe
+E:\001_teaching\240-441-multicore\ppt-2565\prog2017_Assignment_image_processing\prog2017_019_try_load_image04\obj\Release\prog2017_019_try_load_image04.pdb
