@@ -46,6 +46,67 @@ namespace prog2017_019_try_load_image04
 
         private void button7_Click(object sender, EventArgs e)
         {
+            //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+            //using System.Drawing.Imaging;
+            stopWatch1.Reset();
+            stopWatch1.Start();
+            BitmapData dstData = image1.LockBits(new Rectangle(0, 0, image1.Width, image1.Height), ImageLockMode.ReadWrite, image1.PixelFormat);
+
+            IntPtr ptr = dstData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap.
+            int bytes = Math.Abs(dstData.Stride) * image1.Height;
+
+            byte[] rgbValues = new byte[bytes];
+
+            textBox1.AppendText(newLine + newLine + "image width = " + image1.Width.ToString() + "\r\n");
+            textBox1.AppendText("image height = " + image1.Height.ToString() + "\r\n");
+            textBox1.AppendText("bytes = " + bytes.ToString() + "\r\n");
+            textBox1.AppendText("image width*3 = " + (image1.Width * 3).ToString() + "\r\n");
+            textBox1.AppendText("dstData.Stride = " + dstData.Stride.ToString() + "\r\n");
+
+
+
+            // Copy the RGB values into the array.
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+            for (int y = 0; y < image1.Height; y++)
+            {
+                int start_line = y * dstData.Stride;
+                for (int x = 0; x < image1.Width * 3; x += 3)
+                {
+                    rgbValues[x + start_line] = 0;  //blue
+                    //rgbValues[x + 1 + start_line] = 0;//green
+                    rgbValues[x + 2 + start_line] = 0;//red
+                }
+            }
+            // Copy the RGB values back to the bitmap
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
+
+            // Unlock the bits.
+            image1.UnlockBits(dstData);
+            stopWatch1.Stop();
+            pictureBox1.Image = image1;
+            textBox1.AppendText(newLine + newLine + "Time for extracting green component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+            //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+            // แบบนี้ใช้ไม่ได้ กับ parallel.for เนื่องจาก GetPixel และ SetPixel จะไปล๊อกหน่วยความจำ ทำให้ไม่สามารถเข้าถึงพร้อมกันได้หลายเธรด
+            /*            stopWatch1.Reset();
+                        stopWatch1.Start();
+                        Parallel.For(0, image1.Height, y =>            
+                        {
+                            Color pixelColor;
+                            Color newColor;                
+                            for (int x = 0; x < image1.Width; x++)
+                            {
+                                pixelColor = image2_clone.GetPixel(x, y);
+                                newColor = Color.FromArgb(pixelColor.R, 0, 0);
+                                image1.SetPixel(x, y, newColor);
+                            }
+                        });
+                        stopWatch1.Stop();
+                        pictureBox1.Image = image1;
+                        textBox1.AppendText("Time for extracting Red component(Parallel) = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+                        */
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -189,7 +250,67 @@ namespace prog2017_019_try_load_image04
 
         private void button6_Click(object sender, EventArgs e)
         {
+            //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+            //using System.Drawing.Imaging;
+            stopWatch1.Reset();
+            stopWatch1.Start();
+            BitmapData dstData = image1.LockBits(new Rectangle(0, 0, image1.Width, image1.Height), ImageLockMode.ReadWrite, image1.PixelFormat);
 
+            IntPtr ptr = dstData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap.
+            int bytes = Math.Abs(dstData.Stride) * image1.Height;
+
+            byte[] rgbValues = new byte[bytes];
+
+            textBox1.AppendText(newLine + newLine + "image width = " + image1.Width.ToString() + "\r\n");
+            textBox1.AppendText("image height = " + image1.Height.ToString() + "\r\n");
+            textBox1.AppendText("bytes = " + bytes.ToString() + "\r\n");
+            textBox1.AppendText("image width*3 = " + (image1.Width * 3).ToString() + "\r\n");
+            textBox1.AppendText("dstData.Stride = " + dstData.Stride.ToString() + "\r\n");
+
+
+
+            // Copy the RGB values into the array.
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+            for (int y = 0; y < image1.Height; y++)
+            {
+                int start_line = y * dstData.Stride;
+                for (int x = 0; x < image1.Width * 3; x += 3)
+                {
+                    //rgbValues[x + start_line] = 0;  //blue
+                    rgbValues[x + 1 + start_line] = 0;//green
+                    rgbValues[x+2 + start_line] = 0;//red
+                }
+            }
+            // Copy the RGB values back to the bitmap
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
+
+            // Unlock the bits.
+            image1.UnlockBits(dstData);
+            stopWatch1.Stop();
+            pictureBox1.Image = image1;
+            textBox1.AppendText(newLine + newLine + "Time for extracting Blue component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+            //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+            // แบบนี้ใช้ไม่ได้ กับ parallel.for เนื่องจาก GetPixel และ SetPixel จะไปล๊อกหน่วยความจำ ทำให้ไม่สามารถเข้าถึงพร้อมกันได้หลายเธรด
+            /*            stopWatch1.Reset();
+                        stopWatch1.Start();
+                        Parallel.For(0, image1.Height, y =>            
+                        {
+                            Color pixelColor;
+                            Color newColor;                
+                            for (int x = 0; x < image1.Width; x++)
+                            {
+                                pixelColor = image2_clone.GetPixel(x, y);
+                                newColor = Color.FromArgb(pixelColor.R, 0, 0);
+                                image1.SetPixel(x, y, newColor);
+                            }
+                        });
+                        stopWatch1.Stop();
+                        pictureBox1.Image = image1;
+                        textBox1.AppendText("Time for extracting Red component(Parallel) = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+                        */
         }
 
         private void button8_Click(object sender, EventArgs e)
