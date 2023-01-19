@@ -295,7 +295,7 @@ namespace prog2017_019_try_load_image04
                 image1.UnlockBits(bmpData);
                 stopWatch1.Stop();
                 pictureBox1.Image = image1;
-                textBox1.AppendText(newLine + newLine + "Time for changing Red,Green and Blue component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+                textBox1.AppendText(newLine + newLine + "Time for extracting Red component using LockBit [parallel] = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
             }
 
         }
@@ -337,7 +337,7 @@ namespace prog2017_019_try_load_image04
                 image1.UnlockBits(bmpData);
             stopWatch1.Stop();
             pictureBox1.Image = image1;
-            textBox1.AppendText(newLine + newLine + "Time for changing Red,Green and Blue component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+            textBox1.AppendText(newLine + newLine + "Time for extracting Blue component using LockBit  [parallel] = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
             }
 
         }
@@ -375,7 +375,7 @@ namespace prog2017_019_try_load_image04
                 image1.UnlockBits(bmpData);
                 stopWatch1.Stop();
                 pictureBox1.Image = image1;
-                textBox1.AppendText(newLine + newLine + "Time for changing Red,Green and Blue component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+                textBox1.AppendText(newLine + newLine + "Time for extracting Green component using LockBit  [parallel] = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
             }
 
         }
