@@ -88,25 +88,7 @@ namespace prog2017_019_try_load_image04
             stopWatch1.Stop();
             pictureBox1.Image = image1;
             textBox1.AppendText(newLine + newLine + "Time for extracting green component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
-            //-------------------------------------------------------------------------------------------------------------------------------------------------------------
-            // แบบนี้ใช้ไม่ได้ กับ parallel.for เนื่องจาก GetPixel และ SetPixel จะไปล๊อกหน่วยความจำ ทำให้ไม่สามารถเข้าถึงพร้อมกันได้หลายเธรด
-            /*            stopWatch1.Reset();
-                        stopWatch1.Start();
-                        Parallel.For(0, image1.Height, y =>            
-                        {
-                            Color pixelColor;
-                            Color newColor;                
-                            for (int x = 0; x < image1.Width; x++)
-                            {
-                                pixelColor = image2_clone.GetPixel(x, y);
-                                newColor = Color.FromArgb(pixelColor.R, 0, 0);
-                                image1.SetPixel(x, y, newColor);
-                            }
-                        });
-                        stopWatch1.Stop();
-                        pictureBox1.Image = image1;
-                        textBox1.AppendText("Time for extracting Red component(Parallel) = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
-                        */
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -227,25 +209,7 @@ namespace prog2017_019_try_load_image04
             stopWatch1.Stop();
             pictureBox1.Image = image1;
             textBox1.AppendText(newLine + newLine + "Time for extracting Red component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
-            //-------------------------------------------------------------------------------------------------------------------------------------------------------------
-            // แบบนี้ใช้ไม่ได้ กับ parallel.for เนื่องจาก GetPixel และ SetPixel จะไปล๊อกหน่วยความจำ ทำให้ไม่สามารถเข้าถึงพร้อมกันได้หลายเธรด
-            /*            stopWatch1.Reset();
-                        stopWatch1.Start();
-                        Parallel.For(0, image1.Height, y =>            
-                        {
-                            Color pixelColor;
-                            Color newColor;                
-                            for (int x = 0; x < image1.Width; x++)
-                            {
-                                pixelColor = image2_clone.GetPixel(x, y);
-                                newColor = Color.FromArgb(pixelColor.R, 0, 0);
-                                image1.SetPixel(x, y, newColor);
-                            }
-                        });
-                        stopWatch1.Stop();
-                        pictureBox1.Image = image1;
-                        textBox1.AppendText("Time for extracting Red component(Parallel) = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
-                        */
+
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -292,37 +256,128 @@ namespace prog2017_019_try_load_image04
             stopWatch1.Stop();
             pictureBox1.Image = image1;
             textBox1.AppendText(newLine + newLine + "Time for extracting Blue component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
-            //-------------------------------------------------------------------------------------------------------------------------------------------------------------
-            // แบบนี้ใช้ไม่ได้ กับ parallel.for เนื่องจาก GetPixel และ SetPixel จะไปล๊อกหน่วยความจำ ทำให้ไม่สามารถเข้าถึงพร้อมกันได้หลายเธรด
-            /*            stopWatch1.Reset();
-                        stopWatch1.Start();
-                        Parallel.For(0, image1.Height, y =>            
-                        {
-                            Color pixelColor;
-                            Color newColor;                
-                            for (int x = 0; x < image1.Width; x++)
-                            {
-                                pixelColor = image2_clone.GetPixel(x, y);
-                                newColor = Color.FromArgb(pixelColor.R, 0, 0);
-                                image1.SetPixel(x, y, newColor);
-                            }
-                        });
-                        stopWatch1.Stop();
-                        pictureBox1.Image = image1;
-                        textBox1.AppendText("Time for extracting Red component(Parallel) = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
-                        */
+
         }
 
         private void button8_Click(object sender, EventArgs e)
-        {//extract red using lockbit and parallel.for
+        {
+            stopWatch1.Reset();
+            stopWatch1.Start();
+
+            unsafe
+            {
+                BitmapData bmpData = image1.LockBits(new Rectangle(0, 0, image1.Width, image1.Height), ImageLockMode.ReadWrite, image1.PixelFormat);
+                int bytes = Math.Abs(bmpData.Stride) * image1.Height;
+
+                textBox1.AppendText(newLine + newLine + "image width = " + image1.Width.ToString() + "\r\n");
+                textBox1.AppendText("image height = " + image1.Height.ToString() + "\r\n");
+                textBox1.AppendText("bytes = " + bytes.ToString() + "\r\n");
+                textBox1.AppendText("image width*3 = " + (image1.Width * 3).ToString() + "\r\n");
+                textBox1.AppendText("dstData.Stride = " + bmpData.Stride.ToString() + "\r\n");
+                object lockObject = new object();
+                byte* ptr = (byte*)bmpData.Scan0;
+                int height = image1.Height;
+                int width = image1.Width * 3;
+                Parallel.For(0, height, y =>
+                {
+                    byte* offset = ptr + (y * bmpData.Stride); //set row
+                    for (int x = 0; x < width; x = x + 3)
+                    {
+                        offset[x] = 0;
+                        offset[x + 1] = 0;
+                        //offset[x + 2] = 0;
+
+
+                    }
+                });
+                // credit https://stackoverflow.com/questions/51835849/c-lockbits-image-processing-with-artefacts-changing-pixel-format in solution
+                // Unlock the bits.
+                image1.UnlockBits(bmpData);
+                stopWatch1.Stop();
+                pictureBox1.Image = image1;
+                textBox1.AppendText(newLine + newLine + "Time for changing Red,Green and Blue component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+            }
+
         }
+
+
 
         private void button9_Click(object sender, EventArgs e)
         {
+            stopWatch1.Reset();
+            stopWatch1.Start();
+            
+            unsafe
+            {
+            BitmapData bmpData = image1.LockBits(new Rectangle(0, 0, image1.Width, image1.Height), ImageLockMode.ReadWrite, image1.PixelFormat);
+            int bytes = Math.Abs(bmpData.Stride) * image1.Height;
+            textBox1.AppendText(newLine + newLine + "image width = " + image1.Width.ToString() + "\r\n");
+            textBox1.AppendText("image height = " + image1.Height.ToString() + "\r\n");
+            textBox1.AppendText("bytes = " + bytes.ToString() + "\r\n");
+            textBox1.AppendText("image width*3 = " + (image1.Width * 3).ToString() + "\r\n");
+            textBox1.AppendText("dstData.Stride = " + bmpData.Stride.ToString() + "\r\n");
+            object lockObject = new object();
+                byte* ptr = (byte*)bmpData.Scan0;
+                int height = image1.Height;
+                int width = image1.Width * 3;
+                Parallel.For(0, height, y =>
+                {
+                    byte* offset = ptr + (y * bmpData.Stride); //set row
+                    for (int x = 0; x < width; x = x +3)
+                    {
+                        //offset[x] = 0;
+                        offset[x + 1] = 0;
+                        offset[x + 2] = 0;
+                        
+
+                    }
+                });
+
+                // Unlock the bits.
+                image1.UnlockBits(bmpData);
+            stopWatch1.Stop();
+            pictureBox1.Image = image1;
+            textBox1.AppendText(newLine + newLine + "Time for changing Red,Green and Blue component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+            }
+
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
+            stopWatch1.Reset();
+            stopWatch1.Start();
+
+            unsafe
+            {
+                BitmapData bmpData = image1.LockBits(new Rectangle(0, 0, image1.Width, image1.Height), ImageLockMode.ReadWrite, image1.PixelFormat);
+                int bytes = Math.Abs(bmpData.Stride) * image1.Height;
+                textBox1.AppendText(newLine + newLine + "image width = " + image1.Width.ToString() + "\r\n");
+                textBox1.AppendText("image height = " + image1.Height.ToString() + "\r\n");
+                textBox1.AppendText("bytes = " + bytes.ToString() + "\r\n");
+                textBox1.AppendText("image width*3 = " + (image1.Width * 3).ToString() + "\r\n");
+                textBox1.AppendText("dstData.Stride = " + bmpData.Stride.ToString() + "\r\n");
+                object lockObject = new object();
+                byte* ptr = (byte*)bmpData.Scan0;
+                int height = image1.Height;
+                int width = image1.Width * 3;
+                Parallel.For(0, height, y =>
+                {
+                    byte* offset = ptr + (y * bmpData.Stride); //set row
+                    for (int x = 0; x < width; x = x + 3)
+                    {
+                        offset[x] = 0;
+                        //offset[x + 1] = 0;
+                        offset[x + 2] = 0;
+                    }
+                });
+
+                // Unlock the bits.
+                image1.UnlockBits(bmpData);
+                stopWatch1.Stop();
+                pictureBox1.Image = image1;
+                textBox1.AppendText(newLine + newLine + "Time for changing Red,Green and Blue component using LockBit = " + stopWatch1.ElapsedMilliseconds.ToString() + " mS\r\n");
+            }
+
         }
 
         private void button1_Click(object sender, EventArgs e)
